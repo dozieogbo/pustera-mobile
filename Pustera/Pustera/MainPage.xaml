@@ -3,9 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Pustera"
              x:Class="Pustera.MainPage">
+    <StackLayout 
+        VerticalOptions="Fill" 
+        HorizontalOptions="Fill">
+        <ContentView Padding="5"
+               BackgroundColor="Gray" 
+               x:Name="Loader">
+            <Label HeightRequest="10" 
+               HorizontalOptions="CenterAndExpand" 
+               TextColor="White" 
+               FontAttributes="Bold"  
+               Text="Loading..." 
+               FontSize="Micro" 
+               />
+        </ContentView>
 
-	<Label Text="Welcome to Xamarin.Forms!" 
-           VerticalOptions="Center" 
-           HorizontalOptions="Center" />
-
+        <WebView 
+            x:Name="MWebView" 
+            HeightRequest="1000" 
+            WidthRequest="1000" 
+            VerticalOptions="Fill" 
+            HorizontalOptions="Fill" 
+            Navigated="OnEndNavigating" 
+            Navigating="OnNavigating"/>
+    </StackLayout>
 </ContentPage>
