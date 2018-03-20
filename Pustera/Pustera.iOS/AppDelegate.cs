@@ -38,23 +38,24 @@ namespace Pustera.iOS
                     });
                 });
 
-            if (launchOptions != null)
-            {
-                // check for a local notification
-                if (launchOptions.ContainsKey(UIApplication.LaunchOptionsLocalNotificationKey))
-                {
-                    if (launchOptions[UIApplication.LaunchOptionsLocalNotificationKey] is UILocalNotification localNotification)
-                    {
-                        UIAlertController okayAlertController = UIAlertController.Create(localNotification.AlertAction, localNotification.AlertBody, UIAlertControllerStyle.Alert);
-                        okayAlertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
+            //if (launchOptions != null)
+            //{
+            //    // check for a local notification
+            //    if (launchOptions.ContainsKey(UIApplication.LaunchOptionsLocalNotificationKey))
+            //    {
+            //        if (launchOptions[UIApplication.LaunchOptionsLocalNotificationKey] is UILocalNotification localNotification)
+            //        {
+            //            UIAlertController okayAlertController = UIAlertController.Create(localNotification.AlertAction, localNotification.AlertBody, UIAlertControllerStyle.Alert);
+            //            okayAlertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
 
-                        Window.RootViewController.PresentViewController(okayAlertController, true, null);
+            //            Window.RootViewController.PresentViewController(okayAlertController, true, null);
 
-                        // reset our badge
-                        UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
-                    }
-                }
-            }
+            //            // reset our badge
+            //            UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
+            //        }
+            //    }
+            //}
+            UNUserNotificationCenter.Current.Delegate = new NotificationCenter();
 
             UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(FETCH_INTERVAL);
 

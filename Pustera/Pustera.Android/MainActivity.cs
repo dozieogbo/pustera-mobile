@@ -73,7 +73,18 @@ namespace Pustera.Droid
 
             JobScheduler scheduler = (JobScheduler)GetSystemService(JobSchedulerService);
 
-            if (scheduler.GetPendingJob(1500) == null)
+            bool hasBeenScheduled = false;
+
+            foreach (JobInfo job in scheduler.AllPendingJobs)
+            {
+                if (job.Id == 1500)
+                {
+                    hasBeenScheduled = true;
+                    break;
+                }
+            }
+
+            if (!hasBeenScheduled)
             {
                 int result = scheduler.Schedule(jobInfo);
 

@@ -21,9 +21,10 @@ namespace Pustera.iOS
 
                 var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(5, false);
 
+                content.UserInfo = new NSDictionary<NSString, NSString>(new NSString(REQUEST_ID), new NSString(message.Url));
+
                 var request = UNNotificationRequest.FromIdentifier(REQUEST_ID, content, trigger);
 
-                content.UserInfo = new NSDictionary<NSString, NSString>(new NSString(REQUEST_ID), new NSString(message.Url));
 
                 UNUserNotificationCenter.Current.AddNotificationRequest(request, (err) =>
                 {

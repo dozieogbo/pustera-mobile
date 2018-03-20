@@ -5,14 +5,16 @@ namespace Pustera
 {
     public partial class MainPage : ContentPage
     {
+        public bool IsIOS => Device.RuntimePlatform == Device.iOS;
+        public bool IsAndroid => Device.RuntimePlatform == Device.Android;
 
         public string BaseUrl
         {
             get
             {
-                if (Device.RuntimePlatform == Device.iOS)
-                    return "https://pustera.com?source=iOS";
-                else if (Device.RuntimePlatform == Device.Android)
+                if (IsIOS)
+                    return "https://pustera.com?source=iOSApp";
+                else if (IsAndroid)
                     return "https://pustera.com?source=androidApp";
                 else
                     return "https://pustera.com";
@@ -27,6 +29,10 @@ namespace Pustera
         public MainPage()
         {
             InitializeComponent();
+            if (IsAndroid)
+            {
+                NavigationPage.SetHasNavigationBar(this, false);
+            }
             MWebView.Source = BaseUrl;
         }
 
