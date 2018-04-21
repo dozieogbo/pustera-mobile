@@ -6,16 +6,28 @@ namespace Pustera
 {
     public partial class App : Application
     {
-        public App(string baseUrl = null)
+        public App(string baseUrl)
         {
             InitializeComponent();
+            InitializeSettings();
 
-            MainPage page = new MainPage();
-
-            if (!string.IsNullOrEmpty(baseUrl))
-                page.BaseUrl = baseUrl;
+            MainPage page = new MainPage(baseUrl);
 
             MainPage = new NavigationPage(page);
+        }
+
+        public App()
+        {
+            InitializeComponent();
+            InitializeSettings();
+
+            MainPage = new NavigationPage(new MainPage());
+        }
+
+        public void InitializeSettings()
+        {
+            Xamarin.Forms.PlatformConfiguration.AndroidSpecific.Application
+                .SetWindowSoftInputModeAdjust(this, Xamarin.Forms.PlatformConfiguration.AndroidSpecific.WindowSoftInputModeAdjust.Resize);
         }
 
         protected override void OnStart()

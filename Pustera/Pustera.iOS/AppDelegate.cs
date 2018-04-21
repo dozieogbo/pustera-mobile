@@ -1,5 +1,6 @@
 ﻿
 using Foundation;
+using Pustera.Helpers;
 using System;
 using UIKit;
 using UserNotifications;
@@ -32,9 +33,8 @@ namespace Pustera.iOS
                 {
                     new NotificationService().Notify(new Notification
                     {
-                        Date = DateTime.Now,
-                        Url = "http://pustera.com",
-                        Text = "Mmmmmmmmmm"
+                        Title = "amamamma",
+                        Url = "kkkdkdkd"
                     });
                 });
 
@@ -57,21 +57,24 @@ namespace Pustera.iOS
             //}
             UNUserNotificationCenter.Current.Delegate = new NotificationCenter();
 
-            UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(FETCH_INTERVAL);
+            UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(UIApplication.BackgroundFetchIntervalMinimum);
 
             return base.FinishedLaunching(app, launchOptions);
         }
 
-        public override void PerformFetch(UIApplication application, Action<UIBackgroundFetchResult> completionHandler)
+        public async override void PerformFetch(UIApplication application, Action<UIBackgroundFetchResult> completionHandler)
         {
-            new NotificationService().Notify(new Notification
-            {
-                Date = DateTime.Now,
-                Url = "http://pustera.com",
-                Text = "Mmmmmmmmmm"
-            });
+            (Notification notification, string message) = await APIService.CheckNotification();
 
-            base.PerformFetch(application, completionHandler);
+            if (notification != null)
+            {
+                new NotificationService().Notify(notification);
+                completionHandler(UIBackgroundFetchResult.NewData);
+            }
+            else
+            {
+                completionHandler(UIBackgroundFetchResult.NoData);
+            }
         }
 
         public override void ReceivedLocalNotification(UIApplication application, UILocalNotification notification)
@@ -80,14 +83,27 @@ namespace Pustera.iOS
             {
                 const string REQUEST_ID = "NOTIF_URL";
 
-                var url = notification.UserInfo[new NSString(REQUEST_ID)];
+                string url = notification.UserInfo[new NSString(REQUEST_ID)].ToString();
+                string body = notification.UserInfo[new NSString("TEXT_BODY")].ToString();
 
-                //var page = new MainPage()
-                //{
-                //    BaseUrl = url.ToString()
-                //};
+                var alertController = UIAlertController.Create("Alert", body, UIAlertControllerStyle.Alert);
 
-                //Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(page);
+                //Add Actions
+                alertController.AddAction(UIAlertAction.Create("View", UIAlertActionStyle.Default,
+                    async alert =>
+                {
+                    MainPage page = new MainPage(url);
+                    await Xamarin.Forms.Application.Current.MainPage.Navigation
+                    .PushAsync(page);
+                }));
+
+                alertController.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel, alert =>
+                {
+
+                }));
+
+                var window = UIApplication.SharedApplication.KeyWindow;
+                window.RootViewController.PresentViewController(alertController, true, null);
             }
             catch (Exception bug)
             {

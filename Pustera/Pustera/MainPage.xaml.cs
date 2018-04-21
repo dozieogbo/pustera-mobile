@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Pustera.Helpers;
+using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Pustera
@@ -7,6 +9,7 @@ namespace Pustera
     {
         public bool IsIOS => Device.RuntimePlatform == Device.iOS;
         public bool IsAndroid => Device.RuntimePlatform == Device.Android;
+
 
         public string BaseUrl
         {
@@ -26,39 +29,71 @@ namespace Pustera
 
         private string Host = "pustera.com";
 
-        public MainPage()
+        public MainPage() : this(null)
         {
-            InitializeComponent();
-            if (IsAndroid)
-            {
-                NavigationPage.SetHasNavigationBar(this, false);
-            }
-            MWebView.Source = BaseUrl;
+
         }
 
-        void OnNavigating(object sender, WebNavigatingEventArgs e)
+        public MainPage(string baseUrl)
         {
-            if (e.Url.Contains(Host))
+            try
             {
-                Loader.IsVisible = true;
+                InitializeComponent();
+
+                if (IsAndroid)
+                {
+                    NavigationPage.SetHasNavigationBar(this, false);
+                }
+
+                if (MWebView != null)
+                {
+
+                    MWebView.Source = baseUrl ?? BaseUrl;
+                    MWebView.Navigating += OnNavigating;
+                    MWebView.Navigated += OnEndNavigating;
+
+                }
+
+            }
+            catch (Exception bug)
+            {
+            }
+        }
+
+        public void OnNavigating(object sender, WebNavigatingEventArgs e)
+        {
+            Uri uri = new Uri(e.Url);
+
+            if ("https".Contains(uri.Scheme) && uri.Host.Equals(Host))
+            {
+                MLoader.IsVisible = true;
+                MLoader.IsRunning = true;
+                MWebView.Opacity = 0.25;
             }
             else
             {
                 try
                 {
-                    var uri = new Uri(e.Url);
                     Device.OpenUri(uri);
                 }
                 catch (Exception bug)
                 {
                     DisplayAlert("Error", bug.Message, "Ok");
                 }
+                e.Cancel = true;
             }
         }
 
-        void OnEndNavigating(object sender, WebNavigatedEventArgs e)
+        public void OnEndNavigating(object sender, WebNavigatedEventArgs e)
         {
-            Loader.IsVisible = false;
+            MLoader.IsVisible = false;
+            MLoader.IsRunning = false;
+            MWebView.Opacity = 1;
+        }
+
+        public bool OnBackPressed()
+        {
+            return OnBackButtonPressed();
         }
 
         protected override bool OnBackButtonPressed()
@@ -69,7 +104,23 @@ namespace Pustera
                 return false;
             }
             else
-                return base.OnBackButtonPressed();
+            {
+                ExitOnRequest();
+                return true;
+            }
+        }
+
+        private async Task ExitOnRequest()
+        {
+            bool accept = await DisplayAlert("Warning", "Are you sure you want to exit?", "Yes", "No");
+            if (accept)
+            {
+                ICloser closer = DependencyService.Get<ICloser>();
+                if (closer != null)
+                {
+                    closer.Close();
+                }
+            }
         }
 
         protected override void OnAppearing()

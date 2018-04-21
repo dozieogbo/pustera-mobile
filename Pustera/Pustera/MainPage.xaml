@@ -3,28 +3,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Pustera"
              x:Class="Pustera.MainPage">
-    <StackLayout 
+    <Grid 
         VerticalOptions="Fill" 
         HorizontalOptions="Fill">
-        <ContentView Padding="5"
+        <!--<ContentView
+            HeightRequest="20"
+            Padding="5"
                BackgroundColor="Gray" 
                x:Name="Loader">
-            <Label HeightRequest="10" 
+            <Label
                HorizontalOptions="CenterAndExpand" 
                TextColor="White" 
                FontAttributes="Bold"  
                Text="Loading..." 
                FontSize="Micro" 
                />
-        </ContentView>
+        </ContentView>-->
 
         <WebView 
             x:Name="MWebView" 
             HeightRequest="1000" 
             WidthRequest="1000" 
             VerticalOptions="Fill" 
-            HorizontalOptions="Fill" 
-            Navigated="OnEndNavigating" 
-            Navigating="OnNavigating"/>
-    </StackLayout>
+            HorizontalOptions="Fill"
+            IsVisible="True"
+            Opacity="0.25"
+            />
+        
+        <ActivityIndicator
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            IsRunning="True"
+            IsVisible="True"
+            Color="#090945"
+            x:Name="MLoader"/>
+    </Grid>
 </ContentPage>

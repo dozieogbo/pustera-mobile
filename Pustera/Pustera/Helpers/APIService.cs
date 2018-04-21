@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -11,7 +13,7 @@ namespace Pustera.Helpers
     {
         static HttpClient client = new HttpClient();
 
-        public string NotificationUrl
+        private static string NotificationUrl
         {
             get
             {
@@ -24,9 +26,10 @@ namespace Pustera.Helpers
             }
             set { }
         }
-        public async Task<Notification> CheckNotification()
+        public static async Task<(Notification, string)> CheckNotification()
         {
             Notification notification = null;
+            string message = null;
 
             try
             {
@@ -34,23 +37,32 @@ namespace Pustera.Helpers
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    Notification newNotif = JsonConvert.DeserializeObject<Notification>(content);
+                    List<Notification> notifs = JsonConvert.DeserializeObject<List<Notification>>(content);
+
+                    Notification newNotif = notifs.FirstOrDefault();
 
                     DateTime lastDate = Settings.LastDate;
 
-                    if (newNotif.Date > lastDate)
+                    if (newNotif != null && newNotif.Date > lastDate)
                     {
                         notification = newNotif;
                         Settings.LastDate = newNotif.Date;
                     }
+
+                    message = lastDate.ToString();
+                }
+                else
+                {
+                    message = response.Content.ToString();
                 }
             }
             catch (Exception bug)
             {
+                message = bug.Message;
                 Debug.WriteLine(bug.Message);
             }
 
-            return notification;
+            return (notification, message);
         }
     }
 }

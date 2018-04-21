@@ -15,13 +15,15 @@ namespace Pustera.iOS
                 var content = new UNMutableNotificationContent
                 {
                     Title = "Alert",
-                    Body = message.Text,
-                    Badge = 3
+                    Body = message.Title
                 };
 
                 var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(5, false);
 
-                content.UserInfo = new NSDictionary<NSString, NSString>(new NSString(REQUEST_ID), new NSString(message.Url));
+                content.UserInfo = new NSDictionary<NSString, NSString>(new NSString[] {
+                    new NSString(REQUEST_ID), new NSString("TEXT_BODY") },
+                    new NSString[] { new NSString(message.Url), new NSString(message.Title)
+                    });
 
                 var request = UNNotificationRequest.FromIdentifier(REQUEST_ID, content, trigger);
 

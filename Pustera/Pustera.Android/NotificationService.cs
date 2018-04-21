@@ -28,10 +28,11 @@ namespace Pustera.Droid
                     .SetContentIntent(pendingIntent)
                     .SetAutoCancel(true)
                     .SetContentTitle("Alert")
-                    .SetContentText(message.Text)
+                    .SetContentText(message.Title)
                         .SetVibrate(new long[] { 1000, 1000 })
                         .SetSound(Settings.System.DefaultNotificationUri)
 #pragma warning restore CS0618 // Type or member is obsolete
+                        .SetSmallIcon(Resource.Drawable.bell)
                     .SetLargeIcon(((BitmapDrawable)Context.GetDrawable(Resource.Drawable.icon)).Bitmap)
                     .Build();
 

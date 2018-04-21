@@ -24,7 +24,7 @@ namespace Pustera.Helpers
         private const string SettingsKey = "settings_key";
         private static readonly string SettingsDefault = string.Empty;
         private const string DateKey = "last_checked";
-        private static readonly DateTime DateDefault = DateTime.Now.AddDays(-1);
+        private static readonly DateTime DateDefault = new DateTime();
 
         #endregion
 
