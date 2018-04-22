@@ -14,10 +14,7 @@ namespace Pustera.iOS
             {
                 var url = content.UserInfo[REQUEST_ID];
 
-                var page = new MainPage()
-                {
-                    BaseUrl = url.ToString()
-                };
+                var page = new MainPage(url.ToString());
 
                 Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(page);
             }

@@ -31,11 +31,6 @@ namespace Pustera.iOS
                 .RequestAuthorization(UNAuthorizationOptions.Alert,
                 (approved, err) =>
                 {
-                    new NotificationService().Notify(new Notification
-                    {
-                        Title = "amamamma",
-                        Url = "kkkdkdkd"
-                    });
                 });
 
             //if (launchOptions != null)
