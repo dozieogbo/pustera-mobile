@@ -69,5 +69,9 @@
 	</array>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0.0</string>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>XSAppIconAssets</key>
+	<string>Resources/Assets.xcassets/AppIcons.appiconset</string>
 </dict>
 </plist>
